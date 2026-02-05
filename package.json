@@ -1,0 +1,18 @@
+{
+  "name": "project-mnagement-system-backend",
+  "version": "1.0.0",
+  "description": "A project Mangement App for Biginners",
+  "keywords": [
+    "Muaaz"
+  ],
+  "license": "ISC",
+  "author": "Muaaz Aamir Abbasi",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "devDependencies": {
+    "prettier": "3.8.1"
+  }
+}
