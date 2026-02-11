@@ -9,19 +9,19 @@ const sendEmail = async (options) => {
       link: "https://mailgen.js",
     },
   });
-  const emailTextual = mailGenerator.generatePlaintext(options.mailGenContent);
-  const emailHTMl = mailGenerator.generateHTML(options.mailGenContent);
+  const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent);
+  const emailHTMl = mailGenerator.generate(options.mailgenContent);
 
   const transporter = nodemailer.createTransport({
     host: process.env.MAILTRAP_SMTP_HOST,
     port: process.env.MAILTRAP_SMTP_PORT,
     auth: {
-      user: MAILTRAP_SMTP_USER,
-      pass: MAILTRAP_SMTP_PASS,
+      user: process.env.MAILTRAP_SMTP_USER,
+      pass: process.env.MAILTRAP_SMTP_PASS,
     },
   });
   const mail = {
-    from: "",
+    from: process.env.EMAIL_FROM || "noreply@taskmanager.com",
     to: options.email,
     subject: options.subject,
     text: emailTextual,
@@ -73,3 +73,4 @@ const resetPasswordMailgenContent = (username, resetLink) => {
 };
 
 export { emailVerifcationMailgenContenent, resetPasswordMailgenContent };
+export { sendEmail };

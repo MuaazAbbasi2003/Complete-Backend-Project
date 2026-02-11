@@ -40,65 +40,69 @@ const userSchema = new Schema(
     },
     isEmailVerified: {
       type: Boolean,
-      default: true,
+      default: false, // Changed from true to false - users should verify email
     },
     refreshToken: {
-      type: string,
+      type: String,
     },
     forgotPasswordToken: {
-      type: string,
+      type: String,
     },
     forgotPasswordExpiry: {
       type: Date,
     },
     emailVerificationToken: {
-      type: string,
+      type: String,
     },
     emailVerificationExpiry: {
-      type: string,
+      type: Date, // Changed from String to Date for consistency
     },
   },
   {
     timestamps: true,
   },
 );
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+
+// Pre-save hook - FIXED: Removed 'next' parameter for async function
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
+
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+
 userSchema.methods.generateAccessToken = function () {
-  //this is the payload
   return jwt.sign(
     {
       _id: this._id,
       email: this.email,
       username: this.username,
     },
-    process.env.ACCESS_TOKEN_SECERET,
+    process.env.ACCESS_TOKEN_SECRET, // Fixed typo: SECERET -> SECRET
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
   );
 };
+
 userSchema.methods.generateRefreshToken = function () {
-  //this is the payload
   return jwt.sign(
     {
       _id: this._id,
     },
-    process.env.REFRESH_TOKEN_SECERET,
+    process.env.REFRESH_TOKEN_SECRET, // Fixed typo: SECERET -> SECRET
     { expiresIn: process.env.REFRESH_TOKEN_EXPIRY },
   );
 };
+
 userSchema.methods.generateTemporaryToken = function () {
   const unHashedToken = crypto.randomBytes(20).toString("hex");
   const hashedToken = crypto
     .createHash("sha256")
     .update(unHashedToken)
     .digest("hex");
-  const tokenExpiry = Date.now() + 20 * 60 * 100;
+  const tokenExpiry = Date.now() + 20 * 60 * 1000; // Fixed: 100 -> 1000 (20 minutes)
   return { unHashedToken, hashedToken, tokenExpiry };
 };
+
 export const User = mongoose.model("User", userSchema);

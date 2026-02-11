@@ -6,7 +6,7 @@ import { emailVerifcationMailgenContenent, sendEmail } from "../utils/mail.js";
 
 const generateAccessandRefreshToken = async (req, res) => {
   try {
-    const user = User.findById(req.user._id);
+    const user = await User.findById(req.user._id);
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 

@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import router from "./routes/healthCheck.route.js";
+import authRouter from "./routes/auth.route.js";
 const app = express();
 //basic configurations are added
 app.use(express.json({ limit: "16kb" }));
@@ -18,6 +19,7 @@ app.use(
 
 // import router and
 app.use("/api/v1/healthcheck", router);
+app.use("/api/v1/auth", authRouter);
 
 app.get("/", (req, res) => {
   res.send("hi Muaaz Abbasi");
